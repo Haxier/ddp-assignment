@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Predicting Car Stopping Distance</title>
+  <meta charset="utf-8">
+  <meta name="description" content="Predicting Car Stopping Distance">
+  <meta name="author" content="Asier Goikoetxea">
+  <meta name="generator" content="slidify" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/phone.css" 
+    media="only screen and (max-device-width: 480px)" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="libraries/highlighters/highlight/css/tomorrow.css" />
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  <link rel=stylesheet href="./assets/css/ribbons.css"></link>
+
+  
+  <!-- Grab CDN jQuery, fall back to local if offline -->
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
+  <script>window.jQuery || document.write('<script src="libraries/widgets/quiz/js/jquery.js"><\/script>')</script> 
+  <script data-main="libraries/frameworks/io2012/js/slides" 
+    src="libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  </script>
+  
+  
+
+</head>
+<body style="opacity: 0">
+  <slides class="layout-widescreen">
+    
+    <!-- LOGO SLIDE -->
+        <slide class="title-slide segue nobackground">
+  <hgroup class="auto-fadein">
+    <h1>Predicting Car Stopping Distance</h1>
+    <h2>Developing Data Products Course Assignment</h2>
+    <p>Asier Goikoetxea<br/></p>
+  </hgroup>
+  <article></article>  
+</slide>
+    
+
+    <!-- SLIDES -->
+    <slide class="" id="slide-1" style="background:;">
+  <hgroup>
+    <h2>Introduction</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li>We want to create a prediction model to determine the stopping distance of a car knowing the speed.</li>
+<li>We will use the &quot;Cars&quot; dataset from the &quot;Datasets&quot; package</li>
+<li>The Data has 50 observations and 2 variables: speed (mph) and dist (ft)</li>
+</ul>
+
+<pre><code class="r">library(datasets)
+data(&quot;cars&quot;)
+summary(cars)
+</code></pre>
+
+<pre><code>##      speed           dist       
+##  Min.   : 4.0   Min.   :  2.00  
+##  1st Qu.:12.0   1st Qu.: 26.00  
+##  Median :15.0   Median : 36.00  
+##  Mean   :15.4   Mean   : 42.98  
+##  3rd Qu.:19.0   3rd Qu.: 56.00  
+##  Max.   :25.0   Max.   :120.00
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-2" style="background:;">
+  <hgroup>
+    <h2>Fitting a Model</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li>For our prediction algorithm we will fit a basic linear model which relates Speed and Distance</li>
+<li>We can take a look a the coefficients to analyze the model</li>
+<li>in the next slide we will analyze some plots</li>
+</ul>
+
+<pre><code class="r">mdl &lt;- lm(dist ~ speed, data = cars)
+summary(mdl)$coef
+</code></pre>
+
+<pre><code>##               Estimate Std. Error   t value     Pr(&gt;|t|)
+## (Intercept) -17.579095  6.7584402 -2.601058 1.231882e-02
+## speed         3.932409  0.4155128  9.463990 1.489836e-12
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-3" style="background:;">
+  <hgroup>
+    <h2>Model Analysis</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">par(mfrow=c(2,2))
+plot(mdl)
+</code></pre>
+
+<p><img src="assets/fig/unnamed-chunk-3-1.png" alt="plot of chunk unnamed-chunk-3"></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-4" style="background:;">
+  <hgroup>
+    <h2>Predicting new values</h2>
+  </hgroup>
+  <article data-timings="">
+    <ul>
+<li>We use the predict function to calculate new values using our linear model. For example, with a speed of 20 mph we would get these results</li>
+</ul>
+
+<pre><code class="r">userspeed &lt;- 20; 
+dist &lt;- predict(mdl, newdata = data.frame(speed=userspeed))
+print(dist)
+</code></pre>
+
+<pre><code>##        1 
+## 61.06908
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="" id="slide-5" style="background:;">
+  <hgroup>
+    <h2>Ploting the Results</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">plot(cars$speed, cars$dist, xlab=&quot;Car Speed (mph)&quot;, ylab = &quot;Distance (ft)&quot;,
+     col=&quot;blue&quot;) 
+abline(mdl); lines(c(userspeed, userspeed), c(0, 200),col=&quot;red&quot;,lwd=3)
+text(10, 120, paste(&quot;Distance = &quot;, round(dist, digits = 3)))
+</code></pre>
+
+<p><img src="assets/fig/unnamed-chunk-5-1.png" alt="plot of chunk unnamed-chunk-5"></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+    <slide class="backdrop"></slide>
+  </slides>
+  <div class="pagination pagination-small" id='io2012-ptoc' style="display:none;">
+    <ul>
+      <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=1 title='Introduction'>
+         1
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=2 title='Fitting a Model'>
+         2
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=3 title='Model Analysis'>
+         3
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=4 title='Predicting new values'>
+         4
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=5 title='Ploting the Results'>
+         5
+      </a>
+    </li>
+  </ul>
+  </div>  <!--[if IE]>
+    <script 
+      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
+    </script>
+    <script>CFInstall.check({mode: 'overlay'});</script>
+  <![endif]-->
+</body>
+  <!-- Load Javascripts for Widgets -->
+  
+   
+  </html>
